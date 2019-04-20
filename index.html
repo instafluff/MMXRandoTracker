@@ -1,0 +1,116 @@
+<html>
+  <head>
+    <title>MegaMan X Randomizer</title>
+    <!-- Global site tag (gtag.js) - Google Analytics -->
+    <script async src="https://www.googletagmanager.com/gtag/js?id=UA-135113520-1"></script>
+    <script>
+      window.dataLayer = window.dataLayer || [];
+      function gtag(){dataLayer.push(arguments);}
+      gtag('js', new Date());
+
+      gtag('config', 'UA-135113520-1');
+    </script>
+    <script src="js/pinkfluffyunicorn.min.js"></script>
+  </head>
+  <body>
+    <div id="unicorn-display"></div>
+    <script>
+      const params = new URLSearchParams( location.search );
+      var counter = 0;
+      var items = {
+        "aguila": { x: 3, y: 3 },
+        "mandril": { x: 54, y: 4 },
+        "mamut": { x: 159, y: 3 },
+        "armadillo": { x: 209, y: 3 },
+        "bicho": { x: 28, y: 80 },
+        "pulpo": { x: 182, y: 80 },
+        "camaleon": { x: 26, y: 141 },
+        "pinguino": { x: 186, y: 141 },
+        "casco": { x: 103, y: 18 },
+        "pecho": { x: 83, y: 59 },
+        "buster": { x: 83, y: 81 },
+        "piernas": { x: 70, y: 125 },
+      };
+      var powerups = {
+        "energytank": [ { x: 3, y: 47 }, { x: 54, y: 46 }, { x: 159, y: 47 }, { x: 209, y: 47 } ],
+        "heart": [ { x: 31, y: 47 }, { x: 82, y: 47 }, { x: 186, y: 47 }, { x: 237, y: 47 }, { x: 41, y: 124 }, { x: 197, y: 124 }, { x: 41, y: 184 }, { x: 197, y: 185 } ],
+      }
+      function Init() {
+        // Add Initialization Here
+        Unicorn.Load( "start", "images/start.png" );
+        Unicorn.AddOverlay( "start", "start", 0, 0 );
+
+        Object.keys( items ).forEach( x => {
+          Unicorn.Load( x, "images/" + x + ".png" );
+          var sprite = Unicorn.AddOverlay( x, x, items[ x ].x, items[ x ].y, {
+            onHover: function() {
+              this.alpha = 0.75;
+            },
+            onLeave: function() {
+              if( this.isDone ) {
+                this.alpha = 1;
+              }
+              else {
+                this.alpha = 0;
+              }
+            },
+            onPress: function() {
+              this.isDone = !this.isDone;
+              if( this.isDone ) {
+                this.alpha = 1;
+              }
+              else {
+                this.alpha = 0;
+              }
+            }
+          });
+          sprite.alpha = 0;
+        });
+
+        Object.keys( powerups ).forEach( p => {
+          Unicorn.Load( p, "images/" + p + ".png" );
+          powerups[ p ].forEach( (x, i) => {
+            var sprite = Unicorn.AddOverlay( p + i, p, x.x, x.y, {
+              onHover: function() {
+                this.alpha = 0.5;
+              },
+              onLeave: function() {
+                if( this.isDone ) {
+                  this.alpha = 1;
+                }
+                else {
+                  this.alpha = 0;
+                }
+              },
+              onPress: function() {
+                this.isDone = !this.isDone;
+                if( this.isDone ) {
+                  this.alpha = 1;
+                }
+                else {
+                  this.alpha = 0;
+                }
+              }
+            });
+            sprite.alpha = 0;
+          });
+        });
+      }
+
+      function Update( timestamp, timeDiffInMs ) {
+        // Add Update Loop
+        // console.log( timestamp, timeDiffInMs );
+      }
+
+      window.addEventListener('load', () => {
+        Unicorn.Create( "unicorn-display", {
+          width: 256,
+          height: 256,
+          background: "transparent",
+          init: Init,
+          update: Update
+        });
+      });
+    </script>
+  </body>
+</html>
