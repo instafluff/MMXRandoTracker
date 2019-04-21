@@ -18,23 +18,24 @@
       const params = new URLSearchParams( location.search );
       var counter = 0;
       var items = {
-        "aguila": { x: 3, y: 3 },
-        "mandril": { x: 54, y: 4 },
-        "mamut": { x: 159, y: 3 },
-        "armadillo": { x: 209, y: 3 },
-        "bicho": { x: 28, y: 80 },
-        "pulpo": { x: 182, y: 80 },
-        "camaleon": { x: 26, y: 141 },
-        "pinguino": { x: 186, y: 141 },
-        "casco": { x: 103, y: 18 },
-        "pecho": { x: 83, y: 59 },
+        "bosseagle": { x: 3, y: 3 },
+        "bossmandrill": { x: 54, y: 4 },
+        "bossmammoth": { x: 159, y: 3 },
+        "bossarmadillo": { x: 209, y: 3 },
+        "bosskuwanger": { x: 28, y: 80 },
+        "bossoctopus": { x: 182, y: 80 },
+        "bosschameleon": { x: 26, y: 141 },
+        "bosspenguin": { x: 186, y: 141 },
+        "helmet": { x: 103, y: 18 },
+        "armor": { x: 83, y: 59 },
         "buster": { x: 83, y: 81 },
-        "piernas": { x: 70, y: 125 },
+        "boots": { x: 70, y: 125 },
       };
       var powerups = {
-        "energytank": [ { x: 3, y: 47 }, { x: 54, y: 46 }, { x: 159, y: 47 }, { x: 209, y: 47 } ],
+        "energy": [ { x: 3, y: 47 }, { x: 54, y: 46 }, { x: 159, y: 47 }, { x: 209, y: 47 } ],
         "heart": [ { x: 31, y: 47 }, { x: 82, y: 47 }, { x: 186, y: 47 }, { x: 237, y: 47 }, { x: 41, y: 124 }, { x: 197, y: 124 }, { x: 41, y: 184 }, { x: 197, y: 185 } ],
       }
+      var sprites = {};
       function Init() {
         // Add Initialization Here
         Unicorn.Load( "start", "images/start.png" );
@@ -65,6 +66,7 @@
             }
           });
           sprite.alpha = 0;
+          sprites[ x ] = sprite;
         });
 
         Object.keys( powerups ).forEach( p => {
@@ -93,6 +95,7 @@
               }
             });
             sprite.alpha = 0;
+            sprites[ p + ( i + 1 ) ] = sprite;
           });
         });
       }
@@ -101,6 +104,21 @@
         // Add Update Loop
         // console.log( timestamp, timeDiffInMs );
       }
+      function OnChatCommand( user, command, message, flags ) {
+        // Handle Chat Commands
+        if( flags.broadcaster || flags.mod ) {
+          if( sprites[ command ] ) {
+            var sprite = sprites[ command ];
+            sprite.isDone = !sprite.isDone;
+            if( sprite.isDone ) {
+              sprite.alpha = 1;
+            }
+            else {
+              sprite.alpha = 0;
+            }
+          }
+        }
+      }
 
       window.addEventListener('load', () => {
         Unicorn.Create( "unicorn-display", {
@@ -108,7 +126,9 @@
           height: 256,
           background: "transparent",
           init: Init,
-          update: Update
+          update: Update,
+          channel: params.get( "channel" ),
+          onCommand: OnChatCommand
         });
       });
     </script>
